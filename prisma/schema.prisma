@@ -32,7 +32,7 @@ model Usuario {
   tipoUsuarioId Int
 
   reviews      Review[]
-  compras      Compra[]
+  usuario_juegos Usuario_Juego[] // 
   wishlists    Wishlist[]
   carritos     Carrito[]
 }
@@ -46,7 +46,7 @@ model Review {
   juegoId     Int
 }
 
-model Compra {
+model Usuario_Juego {
   id        Int      @id @default(autoincrement())
   detalle   String
   fecha     DateTime @default(now())
@@ -84,16 +84,24 @@ model Juego {
   nombre         String
   precio         Float
   descripcion    String
-  genero         Genero           @relation(fields: [generoId], references: [id])
-  generoId       Int
   desarrollador  Desarrollador    @relation(fields: [desarrolladorId], references: [id])
   desarrolladorId Int
+  
+  // Relación N:N con Género a través de tabla intermedia
+  juego_generos  Juego_Genero[]
 
   reviews        Review[]
-  compras        Compra[]
+  usuario_juegos Usuario_Juego[]
   wishlists      Wishlist[]
   carritos       Carrito_Juego[]
   plataformas    Juego_Plataforma[]
+  
+  // Relación 1:N con imágenes
+  imagenes       Imagen[]
+
+  // Referencia rápida a la imagen principal (opcional)
+  mainImagenId   Int?             @unique
+  mainImagen     Imagen?          @relation("MainImagen", fields: [mainImagenId], references: [id])
 }
 
 model Desarrollador {
@@ -105,7 +113,19 @@ model Desarrollador {
 model Genero {
   id     Int     @id @default(autoincrement())
   nombre String
-  juegos Juego[]
+  // Relación N:N con Juego a través de la tabla intermedia Juego_Genero
+  juego_generos Juego_Genero[]
+}
+
+model Juego_Genero {
+  id       Int     @id @default(autoincrement())
+  detalle  String?
+
+  juego    Juego   @relation(fields: [juegoId], references: [id])
+  juegoId  Int
+
+  genero   Genero  @relation(fields: [generoId], references: [id])
+  generoId Int
 }
 
 model Juego_Plataforma {
@@ -120,4 +140,20 @@ model Plataforma {
   id     Int     @id @default(autoincrement())
   nombre String
   juegos Juego_Plataforma[]
+}
+
+model Imagen {
+  id        Int      @id @default(autoincrement())
+  url       String
+  alt       String?
+  orden     Int      @default(0)
+  isMain    Boolean  @default(false)
+  creadoAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  juego     Juego    @relation(fields: [juegoId], references: [id])
+  juegoId   Int
+
+  // Relación inversa para la referencia "mainImagen" en Juego
+  mainJuego Juego?   @relation("MainImagen")
 }
