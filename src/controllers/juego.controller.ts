@@ -40,7 +40,19 @@ public eliminarJuego = async(req: Request, res:Response)=>{
     }catch (error) {
         res.status(500).json({ message: "Error al eliminar juego", error })
     }
+}
+
+public getImagenesDeUnJuego = async(req: Request, res:Response) => {
+    try {
+        const id = Number(req.params.id);
+
+        const imagenes = await juegoService.obtenerImagenesDeUnJuego(id);
+
+        res.status(200).json(imagenes);
+    } catch (error) {
+        res.status(500).json({message: `ERROR AL TRAER LAS IMAGENES DEL JUEGO CON ID: ${req.params.id}`})
+    }
+}
 
 
-
-}}
+}

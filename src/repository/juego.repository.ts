@@ -16,4 +16,10 @@ export class JuegoRepository{
             where:{id}
         });
     }
+
+    async obtenerImagenes(id:number){
+        return prisma.imagen.findMany({
+            where : {juegoId : id}
+        })
+    }
 }

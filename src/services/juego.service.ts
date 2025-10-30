@@ -14,4 +14,8 @@ export class JuegoService{
     public eliminarJuego = async(id:number)=>{
         return this.juegoRepository.eliminarJuego(id);
     }
+
+    public obtenerImagenesDeUnJuego = async(id:number) => {
+        return this.juegoRepository.obtenerImagenes(id);
+    }
 }
