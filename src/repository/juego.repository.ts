@@ -22,4 +22,10 @@ export class JuegoRepository{
             where : {juegoId : id}
         })
     }
+
+    async obtenerReviews(id:number){
+        return prisma.review.findMany({
+            where : {juegoId : id}
+        })
+    }
 }

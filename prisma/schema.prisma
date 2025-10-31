@@ -32,7 +32,7 @@ model Usuario {
 
 model Review {
   id          Int      @id @default(autoincrement())
-  descripcion String?
+  descripcion String?  @db.Text
   usuario     Usuario? @relation(fields: [usuarioId], references: [id])
   usuarioId   Int?
   juego       Juego?   @relation(fields: [juegoId], references: [id])

@@ -18,4 +18,8 @@ export class JuegoService{
     public obtenerImagenesDeUnJuego = async(id:number) => {
         return this.juegoRepository.obtenerImagenes(id);
     }
+
+    public obtenerReviewsDeUnJuego = async(id:number) => {
+        return this.juegoRepository.obtenerReviews(id);
+    }
 }
