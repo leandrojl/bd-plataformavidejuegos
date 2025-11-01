@@ -80,6 +80,8 @@ model Juego {
   descripcion     String?
   desarrollador   Desarrollador?   @relation(fields: [desarrolladorId], references: [id])
   desarrolladorId Int?
+  released DateTime?
+  rating Float?
 
   juego_generos   Juego_Genero[]
   reviews         Review[]
