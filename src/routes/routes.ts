@@ -14,7 +14,7 @@ export class AppRoutes {
         //router.use('/api/empleado',empleadoRouter)
     router.use("/api", juegoRouter);
      router.use("/api", usuarioJuegoRouter); // <-- agrega esta línea
-        router.use("/api", usuarioRouter.routes);
+router.use("/api/usuarios", usuarioRouter);
         return router;
     }
 

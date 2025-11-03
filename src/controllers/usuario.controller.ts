@@ -55,37 +55,37 @@ export class UsuarioController {
     };
 
 
-    public crearUsuario = async (req:Request, res:Response) => {
-        try {
-            const  {nombre, apellido, email, direccion, password} = req.body;
+   public crearUsuario = async (req: Request, res: Response) => {
+    try {
+        const { nombre, apellido, email, direccion, password } = req.body;
+            console.log('Body recibido:', req.body);
 
-            if (!email || !password || !nombre || !apellido) {
-                return res.status(400).json({
-                    message: 'Faltan campos requeridos',
-                    required: ['email', 'password', 'nombre', 'apellido']
-                });
-            }
 
-         
-
-            const usuario = await usuarioService.crearUsuario(nombre, apellido, email, direccion, password);
-            return res.status(201).json(usuario);
-
-        } catch (error: any) {
-            if (error.code === 'P2002') {
-                return res.status(409).json({
-                    message: 'El email ya está registrado',
-                    field: error.meta?.target?.[0]
-                });
-            }
-
-            console.error('Error al crear usuario:', error);
-            return res.status(500).json({
-                message: 'Error al crear el usuario',
-                error: error.message
+        if (!email || !password || !nombre || !apellido) {
+            return res.status(400).json({
+                message: 'Faltan campos requeridos',
+                required: ['email', 'password', 'nombre', 'apellido']
             });
         }
+
+        const usuario = await usuarioService.crearUsuario(nombre, apellido, email, direccion, password);
+        return res.status(201).json(usuario);
+
+    } catch (error: any) {
+        if (error.code === 'P2002') {
+            return res.status(409).json({
+                message: 'El email ya está registrado',
+                field: error.meta?.target?.[0]
+            });
+        }
+
+        console.error('Error al crear usuario:', error);
+        return res.status(500).json({
+            message: 'Error al crear el usuario',
+            error: error.message
+        });
     }
+};
 
 
 }

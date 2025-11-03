@@ -14,7 +14,7 @@ model Tipo_Usuario {
 }
 
 model Usuario {
-  id             Int           @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   email          String        @unique
   password       String
   nombre         String?
@@ -22,7 +22,7 @@ model Usuario {
   direccion      String?
   saldo          Float         @default(0)
   tipoUsuario    Tipo_Usuario? @relation(fields: [tipoUsuarioId], references: [id])
-  tipoUsuarioId  Int?
+  tipoUsuarioId  Int?           @default(1)
 
   reviews        Review[]
   usuario_juegos Usuario_Juego[]
@@ -46,7 +46,7 @@ model Usuario_Juego {
   usuario   Usuario?  @relation(fields: [usuarioId], references: [id])
   usuarioId Int?
   juego     Juego?    @relation(fields: [juegoId], references: [id])
-  juegoId   Int?
+  juegoId   Int? 
 }
 
 model Wishlist {

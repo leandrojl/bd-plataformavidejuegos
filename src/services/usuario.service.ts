@@ -23,7 +23,15 @@ export class UsuarioService{
     }
 
        async crearUsuario(nombre: string, apellido: string, email: string, direccion: string | undefined, password: string) {
+    console.log('Datos a crear:', { nombre, apellido, email, direccion, password });
 
+
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+  if (!regex.test(password)) {
+    throw new Error(
+      'La contraseña debe tener al menos 8 caracteres, incluir mayúscula, minúscula, número y carácter especial'
+    );
+  }
         if(!nombre || typeof nombre !== 'string'){
             throw new Error('El nombre es obligatorio y debe ser un string')
         }
@@ -42,6 +50,14 @@ export class UsuarioService{
 
         if(!direccion && typeof direccion !== 'string'){
             throw new Error('La direccion debe ser un string')
+        }
+
+
+         const existingUser = await this.usuarioRepository.findByEmail(email);
+        if (existingUser) {
+            const error: any = new Error('El email ya está registrado');
+            error.code = 'P2002';
+            throw error;
         }
 
         return await this.usuarioRepository.createUsuario({
