@@ -4,6 +4,7 @@ import { JuegoController } from "../controllers/juego.controller.js";
 import juegoRouter from "./juego-router/juego.routes.js";
 import usuarioJuegoRouter from "./usuario-juego-router/usuario-juego.routes.js";
 import  usuarioRouter  from "../routes/usuario.router/usuario.router.js";
+import wishlistRouter from "./wishlist-router/wishlist.router.js";
 
 export class AppRoutes {
 
@@ -15,6 +16,7 @@ export class AppRoutes {
     router.use("/juego", juegoRouter);
     router.use("/usuario-juego", usuarioJuegoRouter); // <-- agrega esta línea
     router.use("/usuarios", usuarioRouter);
+    router.use("/wishlist", wishlistRouter);
             return router;
         }
 

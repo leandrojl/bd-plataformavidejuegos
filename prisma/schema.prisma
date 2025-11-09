@@ -50,11 +50,13 @@ model Usuario_Juego {
 }
 
 model Wishlist {
-  id        Int       @id @default(autoincrement())
-  usuario   Usuario?  @relation(fields: [usuarioId], references: [id])
-  usuarioId Int?
-  juego     Juego?    @relation(fields: [juegoId], references: [id])
-  juegoId   Int?
+  id        Int      @id @default(autoincrement())
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  usuarioId Int
+  juego     Juego    @relation(fields: [juegoId], references: [id])
+  juegoId   Int
+
+  @@unique([usuarioId, juegoId])
 }
 
 model Carrito {
