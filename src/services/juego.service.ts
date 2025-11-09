@@ -4,7 +4,7 @@ export class JuegoService{
     constructor(private juegoRepository: JuegoRepository){}
 
     public obtenerJuegos = async()=>{
-        return this.juegoRepository.obtenerJuegos();
+        return this.juegoRepository.obtenerJuegosConPlataformasYGeneros();
     }
     
     public obtenerJuegoPorId = async(id:number)=>{

@@ -11,6 +11,34 @@ export class JuegoRepository{
             where:{id}
         });
     }
+    
+        async obtenerJuegosConPlataformasYGeneros() {
+    const juegos = await prisma.juego.findMany({
+        include: {
+        plataformas: { include: { plataforma: true } },
+        juego_generos: { include: { genero: true } },
+        },
+    });
+
+    return juegos.map(j => ({
+        id: j.id,
+        nombre: j.nombre,
+        subtitulo: j.subtitulo,
+        precio: j.precio,
+        descripcion: j.descripcion,
+        desarrolladorId: j.desarrolladorId,
+        mainImagenId: j.mainImagenId,
+        plataforma: (j.plataformas ?? [])
+        .map(p => p.plataforma)
+        .filter(Boolean),
+        genero: (j.juego_generos ?? [])
+        .map(g => g.genero)
+        .filter(Boolean),
+    }));
+    }
+
+
+
     async eliminarJuego(id:number){
         return prisma.juego.delete({
             where:{id}

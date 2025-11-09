@@ -11,4 +11,5 @@ juegoRouter.get('/imagenes/:id',juegoController.getImagenesDeUnJuego.bind(juegoC
 juegoRouter.get('/reviews/:id',juegoController.getReviewsDeUnJuego.bind(juegoController));
 
 
+
 export default juegoRouter;
