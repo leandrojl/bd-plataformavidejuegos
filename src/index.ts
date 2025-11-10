@@ -9,6 +9,11 @@ const PORT = 3000;
 app.use(express.json());
 app.use(cors())
 
+
+app.get("/", (req: Request, res: Response) => {
+  res.send("Backend Juega-UNLAM funcionando 🚀");
+});
+
 app.use(AppRoutes.routes);
 
 app.listen(PORT,()=>{
