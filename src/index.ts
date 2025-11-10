@@ -7,7 +7,12 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-app.use(cors())
+// Permitir solicitudes desde Angular
+app.use(cors({
+  origin: 'http://localhost:4200', // tu front
+  methods: ['GET', 'POST', 'DELETE', 'PUT', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'] // <- esto es Access-Control-Allow-Headers
+}));
 
 
 app.get("/", (req: Request, res: Response) => {

@@ -5,10 +5,16 @@ import { prisma } from "../prisma.js";
 
 export class WishlistRepository {
 
-  async findWishlistByUsuarioId(usuarioId: number) {
+ async findWishlistByUsuarioId(usuarioId: number) {
   return prisma.wishlist.findMany({
     where: { usuarioId },
-    include: { juego: true },
+    include: {
+      juego: {
+        include: {
+          imagenes: true, 
+        },
+      },
+    },
   });
 }
 
