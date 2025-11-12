@@ -22,6 +22,10 @@ export class UsuarioService{
         return await this.usuarioRepository.findById(id);
     }
 
+     async actualizarImagenes(usuarioId: number, data: { perfilUrl?: string | null; fondoPerfilUrl?: string | null }) {
+     return this.usuarioRepository.actualizarImagenes(usuarioId, data);
+    }
+
        async crearUsuario(nombre: string, apellido: string, email: string, direccion: string | undefined, password: string) {
     console.log('Datos a crear:', { nombre, apellido, email, direccion, password });
 

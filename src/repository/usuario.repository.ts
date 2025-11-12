@@ -13,6 +13,20 @@ export class UsuarioRepository {
     });
   }
 
+
+    async actualizarImagenes(
+  usuarioId: number,
+  data: { perfilUrl?: string | null; fondoPerfilUrl?: string | null }
+) {
+  return prisma.usuario.update({
+    where: { id: usuarioId },
+    data: {
+      perfilUrl: data.perfilUrl ?? null,
+      fondoPerfilUrl: data.fondoPerfilUrl ?? null,
+    },
+  });
+}
+
   async findAllUsuarios() {
     return prisma.usuario.findMany();
   }
@@ -28,7 +42,7 @@ export class UsuarioRepository {
       data: {
         ...data,
         tipoUsuario: {
-          connect: { id: 1 } // conecta con el TipoUsuario "normal"
+          connect: { id: 1 } 
         }
       }
     });
