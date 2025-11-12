@@ -23,7 +23,7 @@ export class JuegoRepository{
     return juegos.map(j => ({
         id: j.id,
         nombre: j.nombre,
-        subtitulo: j.subtitulo,
+        //subtitulo: j.subtitulo,
         precio: j.precio,
         descripcion: j.descripcion,
         desarrolladorId: j.desarrolladorId,
