@@ -33,4 +33,13 @@ export class UsuarioRepository {
       }
     });
   }
+
+  async obtenerSaldo(id: number) {
+    const usuario = await prisma.usuario.findUnique({
+      where: { id },
+      select: { saldo: true },
+    });
+    return usuario ? usuario.saldo : null;
+  }
+
 }
