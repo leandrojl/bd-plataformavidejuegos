@@ -5,6 +5,7 @@ import usuarioRouter from "./usuario.router/usuario.routes.js";
 import plataformaRouter from "./plataforma-router/plataforma.routes.js";
 import generoRouter from "./genero-router/genero.routes.js";
 import wishlistRouter from "./wishlist-router/wishlist.router.js";
+import carritoRouter from "./carrito-router/carrito.routes.js";
 
 export class AppRoutes {
 
@@ -17,6 +18,7 @@ export class AppRoutes {
         router.use("/plataforma", plataformaRouter);
         router.use("/genero", generoRouter);
         router.use("/wishlist", wishlistRouter);
+        router.use("/carrito", carritoRouter)
         return router;
     }
 

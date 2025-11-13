@@ -60,4 +60,19 @@ export class UsuarioJuegoController {
       res.status(500).json({ message: "Error al eliminar relación", error });
     }
   };
+
+  public agregarJuegosAUsuarioFlexible = async (req: Request, res: Response) => {
+    try {
+      const { usuarioId, juegos } = req.body; // juegos puede ser un solo ID o un array
+
+      if (!usuarioId || !juegos || (Array.isArray(juegos) && juegos.length === 0)) {
+        return res.status(400).json("Datos incompletos");
+      }
+
+      const registros = await usuarioJuegoService.agregarJuegos(usuarioId, juegos);
+      res.status(201).json({ message: "Juegos registrados", registros });
+    } catch (error) {
+      res.status(500).json({ message: "Error al registrar juegos", error });
+    }
+  };
 }

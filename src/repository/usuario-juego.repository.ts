@@ -32,4 +32,20 @@ export class UsuarioJuegoRepository {
       where: { usuarioId, juegoId }
     });
   }
+
+  async crearRelacionFlexible(usuarioId: number, juegosIds: number) {
+    // Asegurarse de que sea un array
+    const ids = Array.isArray(juegosIds) ? juegosIds : [juegosIds];
+
+    const relaciones = ids.map(juegoId => ({
+      usuarioId,
+      juegoId,
+      detalle: "",
+      fecha: new Date()
+    }));
+
+    return prisma.usuario_Juego.createMany({
+      data: relaciones
+    });
+  }
 }

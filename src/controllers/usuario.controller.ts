@@ -107,6 +107,21 @@ export class UsuarioController {
             res.status(500).json({ message: "Error al obtener el saldo" });
         }
     }
+    public async descontarSaldo(req: Request, res: Response) {
+        try {
+            const id = Number(req.params.id);
+            const { monto } = req.body;
+
+            if (isNaN(id) || typeof monto !== 'number') {
+                return res.status(400).json({ message: 'Datos inválidos' });
+            }
+
+            const usuarioActualizado = await usuarioService.descontarSaldo(id, monto);
+            res.status(200).json(usuarioActualizado);
+        } catch (error: any) {
+            res.status(500).json({ message: error.message || 'Error al descontar saldo' });
+        }
+    }
 
 }
 
