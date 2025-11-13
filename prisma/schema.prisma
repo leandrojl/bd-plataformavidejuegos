@@ -23,7 +23,8 @@ model Usuario {
   saldo          Float         @default(0)
   tipoUsuario    Tipo_Usuario? @relation(fields: [tipoUsuarioId], references: [id])
   tipoUsuarioId  Int?           @default(1)
- 
+  perfilUrl       String?      @db.LongText
+  fondoPerfilUrl  String?      @db.LongText
   reviews        Review[]
   usuario_juegos Usuario_Juego[]
   wishlists      Wishlist[]

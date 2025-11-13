@@ -40,6 +40,22 @@ export class UsuarioController {
         }
     }
 
+async actualizarImagenes(req: Request, res: Response) {
+  const { id } = req.params;
+  const { perfilUrl, fondoPerfilUrl } = req.body;
+
+  try {
+    const usuarioActualizado = await usuarioService.actualizarImagenes(Number(id), {
+      perfilUrl,
+      fondoPerfilUrl,
+    });
+    res.json(usuarioActualizado);
+  } catch (error) {
+    console.error("Error al actualizar imágenes:", error);
+    res.status(500).json({ message: "Error al actualizar imágenes" });
+  }
+}
+
 
     public loginUsuario = async (req: Request, res: Response) => {
         const { email, password } = req.body;

@@ -1,102 +1,82 @@
 
-import type { UsuarioRepository } from "../repository/usuario.repository.ts";
+import type {UsuarioRepository} from "../repository/usuario.repository.ts";
 
+import * as bcrypt from 'bcrypt';
 
-export class UsuarioService {
-    constructor(private usuarioRepository: UsuarioRepository) { }
+export class UsuarioService{
+    constructor(private usuarioRepository: UsuarioRepository) {}
 
     public async obtenerUsuarios() {
         return await this.usuarioRepository.findAllUsuarios();
     }
     public async verificarCredenciales(email: string, password: string) {
-        const usuario = await this.usuarioRepository.findByEmail(email);
+         const usuario = await this.usuarioRepository.findByEmail(email);
         if (!usuario) return null;
 
-        if (usuario.password !== password) return null;
-
+        const isMatch = await bcrypt.compare(password, usuario.password);
+        if (!isMatch) return null;
         return usuario;
-    }
-    async obtenerSaldo(id: number) {
-        return await this.usuarioRepository.obtenerSaldo(id);
-    }
 
-    public async obtenerUsuarioPorId(id: number) {
+}
+
+
+    public async obtenerUsuarioPorId(id:number){
         return await this.usuarioRepository.findById(id);
     }
 
-    async crearUsuario(nombre: string, apellido: string, email: string, direccion: string | undefined, password: string) {
-        console.log('Datos a crear:', { nombre, apellido, email, direccion, password });
+     async actualizarImagenes(usuarioId: number, data: { perfilUrl?: string | null; fondoPerfilUrl?: string | null }) {
+     return this.usuarioRepository.actualizarImagenes(usuarioId, data);
+    }
+
+       async crearUsuario(nombre: string, apellido: string, email: string, direccion: string | undefined, password: string) {
+    console.log('Datos a crear:', { nombre, apellido, email, direccion, password });
 
 
-        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
-        if (!regex.test(password)) {
-            throw new Error(
-                'La contraseña debe tener al menos 8 caracteres, incluir mayúscula, minúscula, número y carácter especial'
-            );
-        }
-        if (!nombre || typeof nombre !== 'string') {
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+  if (!regex.test(password)) {
+    throw new Error(
+      'La contraseña debe tener al menos 8 caracteres, incluir mayúscula, minúscula, número y carácter especial'
+    );
+  }
+        if(!nombre || typeof nombre !== 'string'){
             throw new Error('El nombre es obligatorio y debe ser un string')
         }
 
-        if (!apellido || typeof apellido !== 'string') {
+        if(!apellido || typeof apellido !== 'string'){
             throw new Error('El apellido es obligatorio y debe ser un string')
         }
 
-        if (!email || typeof email !== 'string') {
+        if(!email || typeof email !== 'string'){
             throw new Error('El email es obligatorio y debe ser un string')
         }
 
-        if (!password || typeof password !== 'string') {
+        if(!password || typeof password !== 'string'){
             throw new Error('El password es obligatorio y debe ser un string')
         }
 
-        if (!direccion && typeof direccion !== 'string') {
+        if(!direccion && typeof direccion !== 'string'){
             throw new Error('La direccion debe ser un string')
         }
 
 
-        const existingUser = await this.usuarioRepository.findByEmail(email);
+         const existingUser = await this.usuarioRepository.findByEmail(email);
         if (existingUser) {
             const error: any = new Error('El email ya está registrado');
             error.code = 'P2002';
             throw error;
         }
 
+         const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+
         return await this.usuarioRepository.createUsuario({
             nombre,
             apellido,
             email,
             direccion,
-            password
+            password: hashedPassword
+
         });
     }
-
-    // async obtenerCarrito(id: number) {
-    //     const carrito = await this.usuarioRepository.obtenerCarrito(id);
-
-    //     if (!carrito) {
-    //         // 🆕 Crear carrito vacío si no existe
-    //         const nuevoCarrito = await this.usuarioRepository.createCarrito(id);
-    //         return { ...nuevoCarrito, juegos: [] };
-    //     }
-
-    //     // Adaptar salida para devolver solo los juegos
-    //     const juegos = carrito.juegos.map(cj => cj.juego);
-
-    //     return {
-    //         id: carrito.id,
-    //         usuarioId: carrito.usuarioId,
-    //         juegos
-    //     };
-    // }
-    async descontarSaldo(id: number, monto: number) {
-        const saldoActual = await this.usuarioRepository.obtenerSaldo(id);
-        if (saldoActual === null) throw new Error('Usuario no encontrado');
-
-        if (saldoActual < monto) throw new Error('Saldo insuficiente');
-
-        const nuevoSaldo = saldoActual - monto;
-        return await this.usuarioRepository.actualizarSaldo(id, nuevoSaldo);
-    }
-
 }
