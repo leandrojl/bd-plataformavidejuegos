@@ -8,7 +8,15 @@ export class UsuarioJuegoRepository {
   async obtenerJuegosDeUsuario(usuarioId: number) {
     return prisma.usuario_Juego.findMany({
       where: { usuarioId },
-      include: { juego: true }
+      include: { 
+        juego: {
+          include: {
+            mainImagen: true,
+            plataformas: { include: { plataforma: true } },
+            juego_generos: { include: { genero: true } }
+          }
+        }
+      }
     });
   }
 
