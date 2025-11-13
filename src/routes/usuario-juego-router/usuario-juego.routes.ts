@@ -8,5 +8,6 @@ usuarioJuegoRouter.post('/', usuarioJuegoController.agregarJuegoAUsuario.bind(us
 usuarioJuegoRouter.get('/usuario/:usuarioId', usuarioJuegoController.obtenerJuegosDeUsuario.bind(usuarioJuegoController));
 usuarioJuegoRouter.get('/juego/:juegoId', usuarioJuegoController.obtenerUsuariosDeJuego.bind(usuarioJuegoController));
 usuarioJuegoRouter.delete('/', usuarioJuegoController.eliminarJuegoDeUsuario.bind(usuarioJuegoController));
+usuarioJuegoRouter.post('/agregar', usuarioJuegoController.agregarJuegosAUsuarioFlexible.bind(usuarioJuegoController));
 
 export default usuarioJuegoRouter;

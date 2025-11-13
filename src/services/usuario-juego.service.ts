@@ -18,4 +18,8 @@ export class UsuarioJuegoService {
   async eliminarJuegoDeUsuario(usuarioId: number, juegoId: number) {
     return this.usuarioJuegoRepository.eliminarRelacion(usuarioId, juegoId);
   }
+
+  async agregarJuegos(usuarioId: number, juegosIds: number) {
+    return this.usuarioJuegoRepository.crearRelacionFlexible(usuarioId, juegosIds);
+  }
 }

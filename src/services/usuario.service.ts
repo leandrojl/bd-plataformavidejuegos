@@ -70,4 +70,33 @@ export class UsuarioService {
             password
         });
     }
+
+    // async obtenerCarrito(id: number) {
+    //     const carrito = await this.usuarioRepository.obtenerCarrito(id);
+
+    //     if (!carrito) {
+    //         // 🆕 Crear carrito vacío si no existe
+    //         const nuevoCarrito = await this.usuarioRepository.createCarrito(id);
+    //         return { ...nuevoCarrito, juegos: [] };
+    //     }
+
+    //     // Adaptar salida para devolver solo los juegos
+    //     const juegos = carrito.juegos.map(cj => cj.juego);
+
+    //     return {
+    //         id: carrito.id,
+    //         usuarioId: carrito.usuarioId,
+    //         juegos
+    //     };
+    // }
+    async descontarSaldo(id: number, monto: number) {
+        const saldoActual = await this.usuarioRepository.obtenerSaldo(id);
+        if (saldoActual === null) throw new Error('Usuario no encontrado');
+
+        if (saldoActual < monto) throw new Error('Saldo insuficiente');
+
+        const nuevoSaldo = saldoActual - monto;
+        return await this.usuarioRepository.actualizarSaldo(id, nuevoSaldo);
+    }
+
 }
