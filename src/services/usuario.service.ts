@@ -1,6 +1,7 @@
 
 import type {UsuarioRepository} from "../repository/usuario.repository.ts";
 
+import * as bcrypt from 'bcrypt';
 
 export class UsuarioService{
     constructor(private usuarioRepository: UsuarioRepository) {}
@@ -12,9 +13,10 @@ export class UsuarioService{
          const usuario = await this.usuarioRepository.findByEmail(email);
         if (!usuario) return null;
 
-        if (usuario.password !== password) return null;
+        const isMatch = await bcrypt.compare(password, usuario.password);
+        if (!isMatch) return null;
+        return usuario;
 
-         return usuario;
 }
 
 
@@ -64,12 +66,17 @@ export class UsuarioService{
             throw error;
         }
 
+         const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+
         return await this.usuarioRepository.createUsuario({
             nombre,
             apellido,
             email,
             direccion,
-            password
+            password: hashedPassword
+
         });
     }
 }
