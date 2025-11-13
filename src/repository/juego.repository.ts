@@ -17,6 +17,7 @@ export class JuegoRepository{
         include: {
         plataformas: { include: { plataforma: true } },
         juego_generos: { include: { genero: true } },
+        mainImagen: true,
         },
     });
 
@@ -28,6 +29,7 @@ export class JuegoRepository{
         descripcion: j.descripcion,
         desarrolladorId: j.desarrolladorId,
         mainImagenId: j.mainImagenId,
+        mainImagen: j.mainImagen,
         plataforma: (j.plataformas ?? [])
         .map(p => p.plataforma)
         .filter(Boolean),
