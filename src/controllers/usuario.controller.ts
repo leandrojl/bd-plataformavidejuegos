@@ -51,61 +51,71 @@ async actualizarImagenes(req: Request, res: Response) {
     });
     res.json(usuarioActualizado);
   } catch (error) {
-    console.error("Error al actualizar imágenes:", error);
     res.status(500).json({ message: "Error al actualizar imágenes" });
   }
 }
 
 
-    public loginUsuario = async (req: Request, res: Response) => {
-        const { email, password } = req.body;
-        try {
-            const usuario = await usuarioService.verificarCredenciales(email, password);
-            if (!usuario) {
-                return res.status(401).json({ message: 'Usuario o contraseña incorrectos' });
-            }
-            return res.status(200).json(usuario);
-        } catch (error) {
-            return res.status(500).json({ message: 'Error al iniciar sesión', error });
+  public loginUsuario = async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+
+    try {
+        if (!email || !password) {
+            return res.status(400).json({ errors: ['Email y contraseña son obligatorios'] });
         }
-    };
 
+        const usuario = await usuarioService.verificarCredenciales(email, password);
 
-    public crearUsuario = async (req: Request, res: Response) => {
-        try {
-            const { nombre, apellido, email, direccion, password } = req.body;
-            console.log('Body recibido:', req.body);
-
-
-            if (!email || !password || !nombre || !apellido) {
-                return res.status(400).json({
-                    message: 'Faltan campos requeridos',
-                    required: ['email', 'password', 'nombre', 'apellido']
-                });
+        if (!usuario) {
+            const existeEmail = await usuarioService.obtenerUsuarioPorEmail(email);
+            if (!existeEmail) {
+                return res.status(404).json({ errors: ['El email ingresado no está registrado'] });
+            } else {
+                return res.status(401).json({ errors: ['La contraseña es incorrecta'] });
             }
+        }
 
-            const usuario = await usuarioService.crearUsuario(nombre, apellido, email, direccion, password);
-            return res.status(201).json(usuario);
+        return res.status(200).json(usuario);
 
-        } catch (error: any) {
-            if (error.code === 'P2002') {
-                return res.status(409).json({
-                    message: 'El email ya está registrado',
-                    field: error.meta?.target?.[0]
-                });
-            }
+    } catch (error: any) {
+        return res.status(500).json({ errors: ['Error al iniciar sesión', error, error.message] });
+    }
+};
 
-            console.error('Error al crear usuario:', error);
-            return res.status(500).json({
-                message: 'Error al crear el usuario',
-                error: error.message
+
+
+
+  public crearUsuario = async (req: Request, res: Response) => {
+    try {
+        const { nombre, apellido, email, direccion, password } = req.body;
+
+        const usuario = await usuarioService.crearUsuario(nombre, apellido, email, direccion, password);
+        return res.status(201).json(usuario);
+
+    } catch (error: any) {
+
+        if (error.code === 'P2002') {
+            return res.status(409).json({
+                message: 'El email ya está registrado',
+                field: error.meta?.target?.[0]
             });
         }
-    };
+
+        if (error.message) {
+            const erroresArray = error.message.split(',').map((e: string) => e.trim());
+            return res.status(400).json({
+                errors: erroresArray
+            });
+        }
+
+        return res.status(500).json({ message: 'Error al crear usuario', error: error.message });
+    }
+};
+
 
     async getSaldo(req: Request, res: Response) {
         try {
-            const id = Number(req.params.id); // ✅ Convertir a número
+            const id = Number(req.params.id); 
 
             if (isNaN(id)) {
                 return res.status(400).json({ message: "ID inválido" });

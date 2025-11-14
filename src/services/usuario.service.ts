@@ -12,13 +12,13 @@ export class UsuarioService {
     public async verificarCredenciales(email: string, password: string) {
         const usuario = await this.usuarioRepository.findByEmail(email);
         if (!usuario) return null;
-
         const isMatch = await bcrypt.compare(password, usuario.password);
         if (!isMatch) return null;
         return usuario;
-
     }
-
+public async obtenerUsuarioPorEmail(email: string) {
+    return await this.usuarioRepository.findByEmail(email);
+}
 
     public async obtenerUsuarioPorId(id: number) {
         return await this.usuarioRepository.findById(id);
@@ -28,57 +28,60 @@ export class UsuarioService {
         return this.usuarioRepository.actualizarImagenes(usuarioId, data);
     }
 
-    async crearUsuario(nombre: string, apellido: string, email: string, direccion: string | undefined, password: string) {
-        console.log('Datos a crear:', { nombre, apellido, email, direccion, password });
+   async crearUsuario(
+  nombre: string,
+  apellido: string,
+  email: string,
+  direccion: string,
+  password: string
+) {
+    const errores: string[] = [];
 
-
-        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
-        if (!regex.test(password)) {
-            throw new Error(
-                'La contraseña debe tener al menos 8 caracteres, incluir mayúscula, minúscula, número y carácter especial'
-            );
-        }
-        if (!nombre || typeof nombre !== 'string') {
-            throw new Error('El nombre es obligatorio y debe ser un string')
-        }
-
-        if (!apellido || typeof apellido !== 'string') {
-            throw new Error('El apellido es obligatorio y debe ser un string')
-        }
-
-        if (!email || typeof email !== 'string') {
-            throw new Error('El email es obligatorio y debe ser un string')
-        }
-
-        if (!password || typeof password !== 'string') {
-            throw new Error('El password es obligatorio y debe ser un string')
-        }
-
-        if (!direccion && typeof direccion !== 'string') {
-            throw new Error('La direccion debe ser un string')
-        }
-
-
-        const existingUser = await this.usuarioRepository.findByEmail(email);
-        if (existingUser) {
-            const error: any = new Error('El email ya está registrado');
-            error.code = 'P2002';
-            throw error;
-        }
-
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-
-        return await this.usuarioRepository.createUsuario({
-            nombre,
-            apellido,
-            email,
-            direccion,
-            password: hashedPassword
-
-        });
+    if (!nombre || typeof nombre !== 'string' || nombre.trim().length < 2) {
+        errores.push('El nombre es obligatorio y debe tener mínimo 2 caracteres');
     }
+
+    if (!apellido || typeof apellido !== 'string' || apellido.trim().length < 2) {
+        errores.push('El apellido es obligatorio y debe tener mínimo 2 caracteres');
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+        errores.push('El email ingresado no es válido');
+    }
+
+    const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+    if (!password || !passRegex.test(password)) {
+        errores.push('La contraseña debe tener al menos 8 caracteres, incluir mayúscula, minúscula, número y carácter especial');
+    }
+
+    if (!direccion || direccion.trim().length < 3) {
+        errores.push('La dirección debe tener al menos 3 caracteres');
+    }
+
+    if (errores.length > 0) {
+        throw new Error(errores.join(', '));
+    }
+
+    const existingUser = await this.usuarioRepository.findByEmail(email);
+    if (existingUser) {
+        const error: any = new Error('El email ya está registrado');
+        error.code = 'P2002';
+        throw error;
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    return await this.usuarioRepository.createUsuario({
+        nombre,
+        apellido,
+        email,
+        direccion,
+        password: hashedPassword
+    });
+}
+
 
     async descontarSaldo(id: number, monto: number) {
         const saldoActual = await this.usuarioRepository.obtenerSaldo(id);
