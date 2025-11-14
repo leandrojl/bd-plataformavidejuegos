@@ -2,6 +2,16 @@ import { prisma } from "../prisma.js";
 
 export class JuegoRepository{
 
+async agregarReview(id: number, reviewData: any) {
+  return prisma.review.create({
+    data: {
+      descripcion: reviewData.descripcion,
+      usuarioId: reviewData.usuarioId,
+      juegoId: id
+    }
+  });
+}
+
     async obtenerJuegos(){
         return prisma.juego.findMany();
     }   
@@ -53,9 +63,17 @@ export class JuegoRepository{
         })
     }
 
-    async obtenerReviews(id:number){
-        return prisma.review.findMany({
-            where : {juegoId : id}
-        })
+    async obtenerReviews(id: number) {
+  return prisma.review.findMany({
+    where: { juegoId: id },
+    include: {
+      usuario: {
+        select: {
+          nombre: true,
+          apellido: true
+        }
+      }
     }
+  });
+}
 }

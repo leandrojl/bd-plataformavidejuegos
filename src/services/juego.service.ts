@@ -22,4 +22,7 @@ export class JuegoService{
     public obtenerReviewsDeUnJuego = async(id:number) => {
         return this.juegoRepository.obtenerReviews(id);
     }
+    public agregarReviewAJuego = async(id:number, reviewData:any) => {
+        return this.juegoRepository.agregarReview(id, reviewData);
+    }
 }
