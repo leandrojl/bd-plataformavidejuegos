@@ -11,8 +11,8 @@ export class AppRoutes {
         const  router = Router();
 
         //router.use('/api/empleado',empleadoRouter)
-    router.use("/api", juegoRouter);
-     router.use("/api", usuarioJuegoRouter); // <-- agrega esta línea
+    router.use("/api/juegos", juegoRouter);
+    router.use("/api/usuario-juego", usuarioJuegoRouter); // <-- agrega esta línea
         
         return router;
     }

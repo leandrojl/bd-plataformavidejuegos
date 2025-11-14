@@ -7,7 +7,7 @@ export class JuegoController {
     constructor() { }
     getJuegos = async (req, res) => {
         try {
-            const juegos = await juegoService.obtenerJuegos();
+            const juegos = await juegoService.obtenerJuegosConOfertas();
             res.status(200).json(juegos);
         }
         catch (error) {
@@ -24,5 +24,14 @@ export class JuegoController {
             res.status(500).json({ message: "Error al obtener juego por ID", error });
         }
     };
+    ofertas = async (req, res) => {
+    try {
+      const limit = req.query.limit ? Number(req.query.limit) : 8;
+      const data = await juegoService.listarOfertasActivas(limit);
+      res.status(200).json(data);
+    } catch (error) {
+      res.status(500).json({ message: "Error al obtener ofertas", error });
+    }
+  };
 }
 //# sourceMappingURL=juego.controller.js.map

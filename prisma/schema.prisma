@@ -80,28 +80,31 @@ model Carrito_Juego {
 }
 
 model Juego {
-  id             Int              @id @default(autoincrement())
-  nombre         String
-  precio         Float
-  descripcion    String
-  desarrollador  Desarrollador    @relation(fields: [desarrolladorId], references: [id])
-  desarrolladorId Int
-  
-  // Relación N:N con Género a través de tabla intermedia
-  juego_generos  Juego_Genero[]
+  id               Int           @id @default(autoincrement())
+  nombre           String
+  precio           Float
+  descripcion      String
+  desarrollador    Desarrollador @relation(fields: [desarrolladorId], references: [id])
+  desarrolladorId  Int
 
-  reviews        Review[]
-  usuario_juegos Usuario_Juego[]
-  wishlists      Wishlist[]
-  carritos       Carrito_Juego[]
-  plataformas    Juego_Plataforma[]
-  
-  // Relación 1:N con imágenes
-  imagenes       Imagen[]
+  juego_generos    Juego_Genero[]
+  reviews          Review[]
+  usuario_juegos   Usuario_Juego[]
+  wishlists        Wishlist[]
+  carritos         Carrito_Juego[]
+  plataformas      Juego_Plataforma[]
+  imagenes         Imagen[]
 
-  // Referencia rápida a la imagen principal (opcional)
-  mainImagenId   Int?             @unique
-  mainImagen     Imagen?          @relation("MainImagen", fields: [mainImagenId], references: [id])
+  mainImagenId     Int?          @unique
+  mainImagen       Imagen?       @relation("MainImagen", fields: [mainImagenId], references: [id])
+
+  fechaLanzamiento DateTime
+  destacado        Boolean       @default(false)
+
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  ofertas          Oferta[]        // <— relación 1:N
 }
 
 model Desarrollador {
@@ -156,4 +159,13 @@ model Imagen {
 
   // Relación inversa para la referencia "mainImagen" en Juego
   mainJuego Juego?   @relation("MainImagen")
+}
+
+model Oferta {
+  id         Int      @id @default(autoincrement())
+  juego      Juego    @relation(fields: [juegoId], references: [id])
+  juegoId    Int
+  descuento  Float    
+  fechaInicio DateTime
+  fechaFin    DateTime
 }
