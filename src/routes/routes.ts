@@ -19,6 +19,7 @@ export class AppRoutes {
         router.use("/genero", generoRouter);
         router.use("/wishlist", wishlistRouter);
         router.use("/carrito", carritoRouter)
+      
         return router;
     }
 
