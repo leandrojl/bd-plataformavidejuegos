@@ -41,35 +41,70 @@ export class UsuarioController {
     }
 
 
-    public loginUsuario = async (req: Request, res: Response) => {
-        const { email, password } = req.body;
-        try {
-            const usuario = await usuarioService.verificarCredenciales(email, password);
-            if (!usuario) {
-                return res.status(401).json({ message: 'Usuario o contraseña incorrectos' });
-            }
-            return res.status(200).json(usuario); 
-        } catch (error) {
-            return res.status(500).json({ message: 'Error al iniciar sesión', error });
+  public loginUsuario = async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+
+    try {
+        const resultado = await usuarioService.verificarCredenciales(email, password);
+
+        if (resultado.error === "EMAIL_NO_ENCONTRADO") {
+            return res.status(404).json({ error: "EMAIL_NO_ENCONTRADO" });
         }
-    };
+
+        if (resultado.error === "PASSWORD_INCORRECTA") {
+            return res.status(401).json({ error: "PASSWORD_INCORRECTA" });
+        }
+
+        return res.status(200).json(resultado.usuario);
+
+    } catch (error) {
+        console.error("Error al iniciar sesión:", error);
+        return res.status(500).json({ error: "ERROR_LOGIN" });
+    }
+};
+
 
 
    public crearUsuario = async (req: Request, res: Response) => {
     try {
         const { nombre, apellido, email, direccion, password } = req.body;
-            console.log('Body recibido:', req.body);
 
+        const usuario = await usuarioService.crearUsuario(
+            nombre,
+            apellido,
+            email,
+            direccion ?? null,
+            password
+        );
 
-        if (!email || !password || !nombre || !apellido) {
-            return res.status(400).json({
-                message: 'Faltan campos requeridos',
-                required: ['email', 'password', 'nombre', 'apellido']
+        return res.status(201).json(usuario);
+
+    } catch (error: any) {
+
+        if (error.code === 'P2002') {
+            return res.status(409).json({
+                message: 'El email ya está registrado'
             });
         }
 
-        const usuario = await usuarioService.crearUsuario(nombre, apellido, email, direccion, password);
-        return res.status(201).json(usuario);
+        if (error.message) {
+            return res.status(400).json({
+                message: error.message
+            });
+        }
+
+        console.error('Error inesperado al crear usuario:', error);
+
+        return res.status(500).json({
+            message: 'Error interno del servidor'
+        });
+    }
+}
+
+
+    async getSaldo(req: Request, res: Response) {
+        try {
+            const id = Number(req.params.id); 
 
     } catch (error: any) {
         if (error.code === 'P2002') {

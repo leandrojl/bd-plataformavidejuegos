@@ -91,6 +91,9 @@ model Juego {
 
   mainImagenId    Int?             @unique
   mainImagen      Imagen?          @relation("MainImagen", fields: [mainImagenId], references: [id])
+  fechaLanzamiento DateTime
+  destacado        Boolean       @default(false)
+  ofertas          Oferta[]        // <— relación 1:N
 }
 
 model Desarrollador {
@@ -139,4 +142,13 @@ model Imagen {
   juegoId   Int?
 
   mainJuego Juego?   @relation("MainImagen")
+}
+
+model Oferta {
+  id         Int      @id @default(autoincrement())
+  juego      Juego    @relation(fields: [juegoId], references: [id])
+  juegoId    Int
+  descuento  Float    
+  fechaInicio DateTime
+  fechaFin    DateTime
 }

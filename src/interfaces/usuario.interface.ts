@@ -3,7 +3,7 @@ export interface Usuario {
     nombre: string;
     apellido: string;
     email: string;
-    direccion?: string | null;
+  direccion?: string | undefined;
     password: string;
-    tipoUsuarioId?: number;  // ID del tipo de usuario (1 para usuario normal, etc.)
+    tipoUsuarioId?: number; 
 }

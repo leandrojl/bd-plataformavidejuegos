@@ -13,23 +13,27 @@ export class UsuarioRepository {
     });
   }
 
+ 
+
   async findAllUsuarios() {
     return prisma.usuario.findMany();
   }
 
-  async createUsuario(data: {
-    nombre: string;
-    apellido: string;
+ async createUsuario(data: {
+    nombre?: string | null;
+    apellido?: string | null;
     email: string;
-    direccion?: string;
+    direccion?: string | null;
     password: string;
   }) {
     return prisma.usuario.create({
       data: {
-        ...data,
-        tipoUsuario: {
-          connect: { id: 1 } // conecta con el TipoUsuario "normal"
-        }
+        nombre: data.nombre ?? null,
+        apellido: data.apellido ?? null,
+        email: data.email,
+        direccion: data.direccion ?? null,
+        password: data.password,
+        tipoUsuario: { connect: { id: 1 } }
       }
     });
   }
