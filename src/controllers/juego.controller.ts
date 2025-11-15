@@ -59,6 +59,7 @@ public getImagenesDeUnJuego = async(req: Request, res:Response) => {
 }
 
 
+
 public getReviewsDeUnJuego = async(req: Request, res: Response) => {
     try {
         const id = Number(req.params.id);
@@ -74,5 +75,17 @@ public getReviewsDeUnJuego = async(req: Request, res: Response) => {
     }
 }
 
+public agregarReviewAJuego = async(req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        const reviewData = req.body;
+        if(isNaN(id)){
+            res.status(400).json({message: "ID EN METODO AGREGAR REVIEW INVALIDO"});
+        }
+        const nuevaReview = await juegoService.agregarReviewAJuego(id, reviewData);
+        res.status(201).json(nuevaReview);
+    } catch (error) {
+        res.status(500).json({message: `ERROR AL AGREGAR LA REVIEW AL JUEGO CON ID: ${req.params.id}`})
+    }
 
-}
+}}

@@ -8,7 +8,15 @@ export class UsuarioJuegoRepository {
   async obtenerJuegosDeUsuario(usuarioId: number) {
     return prisma.usuario_Juego.findMany({
       where: { usuarioId },
-      include: { juego: true }
+      include: { 
+        juego: {
+          include: {
+            mainImagen: true,
+            plataformas: { include: { plataforma: true } },
+            juego_generos: { include: { genero: true } }
+          }
+        }
+      }
     });
   }
 
@@ -22,6 +30,21 @@ export class UsuarioJuegoRepository {
   async eliminarRelacion(usuarioId: number, juegoId: number) {
     return prisma.usuario_Juego.deleteMany({
       where: { usuarioId, juegoId }
+    });
+  }
+
+  async crearRelacionFlexible(usuarioId: number, juegosIds: number) {
+    const ids = Array.isArray(juegosIds) ? juegosIds : [juegosIds];
+
+    const relaciones = ids.map(juegoId => ({
+      usuarioId,
+      juegoId,
+      detalle: "",
+      fecha: new Date()
+    }));
+
+    return prisma.usuario_Juego.createMany({
+      data: relaciones
     });
   }
 }
